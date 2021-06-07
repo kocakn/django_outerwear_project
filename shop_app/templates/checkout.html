@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        {% load static %}
+        {% load crispy_forms_tags %}
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Shop Homepage - Start Bootstrap Template</title>
+        <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <link href="{% static 'css/index_page.css'%}" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="{% url 'index' %}">K<span style="color:red"><b>'</b></span> O S T I N</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'index' %}">Главная</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Каталог</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                {% for category in categories %}
+                                <li><a class="dropdown-item" href="{{ category.url }}">{{ category.name }} ({{ category.count }})</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="#!">О проекте</a></li>
+                    </ul>
+                    <form class="d-flex">
+                        <a href="{% url 'cart' %}" class="btn btn-outline-dark" type="submit">
+                            <i class="bi-cart-fill me-1"></i>
+                            Корзина
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">{{ cart.products.count }}</span>
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <!-- Секция оформления заказа-->
+        <section class="py-5">
+            <h2 class="text-center fw-bolder">Оформление заказа</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                        </svg>
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Наименование</th>
+                            <th scope="col">Изображение</th>
+                            <th scope="col">Цена</th>
+                            <th scope="col">Кол-во</th>
+                              <th scope="col">Общая цена</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for item in cart.products.all %}
+                              <tr>
+                                <th scope="row">{{ item.content_object.title }}</th>
+                                <td class="w-15"><img src="{{ item.content_object.image.url }}" class="img-fluid"></td>
+                                <td>{{ item.content_object.price }} ₽</td>
+                                <td>{{ item.qty }}</td>
+                                  <td>{{ item.final_price }} ₽</td>
+                              </tr>
+                          {% endfor %}
+                            <tr>
+                                <td colspan="2"></td>
+                                <td>Итого:</td>
+                                <td>{{ cart.total_products }} товаров</td>
+                                <td><strong>{{ cart.final_price }} ₽</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <h2 class="text-center fw-bolder">Форма заказа</h2>
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <div class="form-floating">
+                        <form action="{% url 'make_order' %}" method="POST">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <input type="submit" class="btn btn-success mt-2" value="Оформить заказ">
+                        </form>
+                    </div>
+                </div>
+            </div>  
+        </section>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Konstantin 2021</p></div>
+        </footer>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
