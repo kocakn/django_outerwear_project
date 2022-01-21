@@ -7,12 +7,14 @@
 
 Инициализация виртуального окружения и его настройка:  
 1. Windows:  
-`python -m venv venv --upgrade-deps`  
+`python -m venv venv`  
 `venv\scripts\activate`  
+`pip install --upgrade pip`  
 `pip install -r requirements.txt`
 2. Linux:  
 `python3 -m venv venv`  
 `source venv/bin/activate`  
+`pip install --upgrade pip`  
 `pip install -r requirements.txt`
 
 Запуск сервера:  
